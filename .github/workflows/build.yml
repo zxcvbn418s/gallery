@@ -23,10 +23,10 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Clear old android configuration
+      - name: Clean and Rebuild Android Project
         run: |
           rm -rf android
-          flutter create --platforms android .
+          flutter create --platforms android --org com.example.launcher .
 
       - name: Fetch packages
         run: flutter pub get
