@@ -1,5 +1,5 @@
 ```yaml
-name: Build Android APK Final
+name: Build Android APK Final Launch
 
 on:
   push:
@@ -11,7 +11,9 @@ on:
 
 jobs:
   build:
+    name: Build Flutter APK on Ubuntu
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -38,6 +40,5 @@ jobs:
         with:
           name: ios-launcher-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
 
 ```
