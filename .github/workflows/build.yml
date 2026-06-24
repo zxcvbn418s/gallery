@@ -1,37 +1,51 @@
-name: Builds
+```yaml
+name: Build Android APK
+
+# این اسکریپت با هر بار تغییر در شاخه اصلی (main) به طور خودکار اجرا می‌شود
 on:
   push:
     branches:
       - main
   pull_request:
-
-# Declare default permissions as read only.
-permissions: read-all
+    branches:
+      - main
 
 jobs:
   build:
-    name: Build ${{ matrix.target }}
-    runs-on: macos-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: ["apk --debug", "appbundle --debug", "ios --no-codesign", macos, web]
+    name: Build Flutter APK on Ubuntu
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Set up JDK 11
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          java-version: 11
-          distribution: temurin
-      # Set up Flutter.
-      - name: Clone Flutter repository with master channel
-        uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225
-        with:
-          channel: master
-      - run: flutter doctor -v
+      # دریافت کدهای پروژه از مخزن گیت‌هاب شما
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      # Checkout gallery code and get packages.
-      - name: Checkout gallery code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - run: flutter pub get
+      # نصب و تنظیم نسخه ۱۷ جاوا برای کامپایل اندروید
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-      - run: flutter build ${{ matrix.target }}
+      # نصب و تنظیم فلاتر روی سرور مجازی گیت‌هاب
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # دریافت و آپدیت کتابخانه‌های مورد نیاز پروژه
+      - name: Get Flutter Packages
+        run: flutter pub get
+
+      # ساختن فایل نصب نهایی اندروید به صورت بهینه و ریلیز
+      - name: Build Android Release APK
+        run: flutter build apk --release --no-shrink
+
+      # آپلود فایل APK ساخته شده در بخش Artifacts برای دانلود شما
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-launcher-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+```
