@@ -1,8 +1,6 @@
-name: Build Android APK
 ```yaml
-name: Build Android APK
+name: Build Android APK 2
 
-# این اسکریپت با هر بار تغییر در شاخه اصلی (main) به طور خودکار اجرا می‌شود
 on:
   push:
     branches:
@@ -17,32 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # دریافت کدهای پروژه از مخزن گیت‌هاب شما
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # نصب و تنظیم نسخه ۱۷ جاوا برای کامپایل اندروید
       - name: Setup Java JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # نصب و تنظیم فلاتر روی سرور مجازی گیت‌هاب
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      # دریافت و آپدیت کتابخانه‌های مورد نیاز پروژه
       - name: Get Flutter Packages
         run: flutter pub get
 
-      # ساختن فایل نصب نهایی اندروید به صورت بهینه و ریلیز
       - name: Build Android Release APK
         run: flutter build apk --release --no-shrink
 
-      # آپلود فایل APK ساخته شده در بخش Artifacts برای دانلود شما
       - name: Upload Release APK
         uses: actions/upload-artifact@v3
         with:
