@@ -23,9 +23,12 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Clean and Rebuild Android Project
+      - name: Master Clean Android
         run: |
+          flutter clean
           rm -rf android
+          rm -rf .dart_tool
+          rm -f pubspec.lock
           flutter create --platforms android --org com.example.launcher .
 
       - name: Fetch packages
